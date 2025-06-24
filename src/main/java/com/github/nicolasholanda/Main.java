@@ -25,7 +25,21 @@ public class Main {
         }
 
         Date date = groups.getFirst().getDates().getFirst();
-
-        System.out.println(date);
+        
+        String task = extractTask(input, groups);
+        
+        System.out.println("Task: " + task);
+        System.out.println("Date: " + date);
+    }
+    
+    private static String extractTask(String input, List<DateGroup> groups) {
+        String task = input;
+        
+        for (DateGroup group : groups) {
+            String dateText = group.getText();
+            task = task.replace(dateText, "").trim();
+        }
+        
+        return task;
     }
 }
