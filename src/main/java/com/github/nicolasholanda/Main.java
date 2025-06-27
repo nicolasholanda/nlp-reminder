@@ -8,12 +8,12 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        if(args.length != 1) {
-            System.out.println("Provide exactly one argument");
+        if(args.length < 1) {
+            System.out.println("Provide the reminder text.");
             System.exit(1);
         }
 
-        String input = args[0];
+        String input = String.join("", args);
 
         Parser parser = new Parser();
         
