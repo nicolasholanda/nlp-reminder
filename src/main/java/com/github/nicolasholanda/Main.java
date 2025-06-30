@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+    private static final ReminderDatabase database = new ReminderDatabase();
+    
     public static void main(String[] args) {
         if(args.length < 1) {
             System.out.println("Provide at least one argument");
@@ -25,7 +27,6 @@ public class Main {
             System.out.println("No dates found");
             System.exit(1);
         }
-
 
         List<Date> futureDates = filterFutureDates(groups);
         
@@ -48,9 +49,24 @@ public class Main {
 
         String task = extractTask(input, groups);
         
-        System.out.println("\nFinal result:");
+        Reminder reminder = new Reminder(task, selectedDate);
+        database.saveReminder(reminder);
+        
+        System.out.println("\nReminder created:");
         System.out.println("Task: " + task);
-        System.out.println("Date: " + selectedDate);
+        System.out.println("Due: " + selectedDate);
+        
+        showPendingReminders();
+    }
+    
+    private static void showPendingReminders() {
+        List<Reminder> pending = database.getPendingReminders();
+        if (!pending.isEmpty()) {
+            System.out.println("\nPending reminders:");
+            for (Reminder reminder : pending) {
+                System.out.println("  " + reminder.getId() + ". " + reminder.getTask() + " (due: " + reminder.getDueDate() + ")");
+            }
+        }
     }
     
     private static Date promptUserForDateSelection(List<Date> dates) {
