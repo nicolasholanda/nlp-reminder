@@ -1,14 +1,16 @@
-package com.github.nicolasholanda;
+package com.github.nicolasholanda.repository;
+
+import com.github.nicolasholanda.model.Reminder;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ReminderDatabase {
+public class ReminderRepository {
     private static final String DB_URL = "jdbc:sqlite:reminders.db";
     
-    public ReminderDatabase() {
+    public ReminderRepository() {
         initDatabase();
     }
     

@@ -1,5 +1,7 @@
 package com.github.nicolasholanda;
 
+import com.github.nicolasholanda.model.Reminder;
+import com.github.nicolasholanda.repository.ReminderRepository;
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    private static final ReminderDatabase database = new ReminderDatabase();
+    private static final ReminderRepository repository = new ReminderRepository();
     
     public static void main(String[] args) {
         if(args.length < 1) {
@@ -50,7 +52,7 @@ public class Main {
         String task = extractTask(input, groups);
         
         Reminder reminder = new Reminder(task, selectedDate);
-        database.saveReminder(reminder);
+        repository.saveReminder(reminder);
         
         System.out.println("\nReminder created:");
         System.out.println("Task: " + task);
@@ -60,7 +62,7 @@ public class Main {
     }
     
     private static void showPendingReminders() {
-        List<Reminder> pending = database.getPendingReminders();
+        List<Reminder> pending = repository.getPendingReminders();
         if (!pending.isEmpty()) {
             System.out.println("\nPending reminders:");
             for (Reminder reminder : pending) {
