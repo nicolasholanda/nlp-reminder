@@ -2,6 +2,7 @@ package com.github.nicolasholanda;
 
 import com.github.nicolasholanda.model.Reminder;
 import com.github.nicolasholanda.repository.ReminderRepository;
+import com.github.nicolasholanda.service.ReminderMonitor;
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
@@ -12,6 +13,7 @@ import java.util.Scanner;
 
 public class Main {
     private static final ReminderRepository repository = new ReminderRepository();
+    private static final ReminderMonitor monitor = new ReminderMonitor(repository);
     
     public static void main(String[] args) {
         if(args.length < 1) {
@@ -19,6 +21,8 @@ public class Main {
             System.exit(1);
         }
 
+        startMonitor();
+        
         String input = String.join(" ", args);
         System.out.println("Input: " + input);
 
@@ -59,6 +63,26 @@ public class Main {
         System.out.println("Due: " + selectedDate);
         
         showPendingReminders();
+        
+        System.out.println("\nMonitor is running in background. Press Ctrl+C to stop.");
+        keepAlive();
+    }
+    
+    private static void startMonitor() {
+        monitor.start();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("\nShutting down...");
+            monitor.stop();
+        }));
+    }
+    
+    private static void keepAlive() {
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
     
     private static void showPendingReminders() {
