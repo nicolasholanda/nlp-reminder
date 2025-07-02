@@ -1,12 +1,14 @@
 package com.github.nicolasholanda.repository;
 
 import com.github.nicolasholanda.model.Reminder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 public class ReminderRepository {
     private static final String DB_URL = "jdbc:sqlite:reminders.db";
     
@@ -29,7 +31,7 @@ public class ReminderRepository {
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
-            System.err.println("Error initializing database: " + e.getMessage());
+            log.error("Error initializing database: {}", e.getMessage());
         }
     }
     
@@ -45,10 +47,10 @@ public class ReminderRepository {
             pstmt.setBoolean(4, reminder.isCompleted());
             
             pstmt.executeUpdate();
-            System.out.println("Reminder saved successfully!");
+            log.info("Reminder saved successfully!");
             
         } catch (SQLException e) {
-            System.err.println("Error saving reminder: " + e.getMessage());
+            log.error("Error saving reminder: {}", e.getMessage());
         }
     }
     
@@ -72,7 +74,7 @@ public class ReminderRepository {
             }
             
         } catch (SQLException e) {
-            System.err.println("Error retrieving reminders: " + e.getMessage());
+            log.error("Error retrieving reminders: {}", e.getMessage());
         }
         
         return reminders;
@@ -100,7 +102,7 @@ public class ReminderRepository {
             }
             
         } catch (SQLException e) {
-            System.err.println("Error retrieving due reminders: " + e.getMessage());
+            log.error("Error retrieving due reminders: {}", e.getMessage());
         }
         
         return reminders;
@@ -116,7 +118,7 @@ public class ReminderRepository {
             pstmt.executeUpdate();
             
         } catch (SQLException e) {
-            System.err.println("Error marking reminder as completed: " + e.getMessage());
+            log.error("Error marking reminder as completed: {}", e.getMessage());
         }
     }
 } 

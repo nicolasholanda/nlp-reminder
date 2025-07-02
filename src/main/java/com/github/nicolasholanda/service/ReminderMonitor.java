@@ -2,12 +2,14 @@ package com.github.nicolasholanda.service;
 
 import com.github.nicolasholanda.model.Reminder;
 import com.github.nicolasholanda.repository.ReminderRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class ReminderMonitor {
     private final ReminderRepository repository;
     private final ScheduledExecutorService scheduler;
@@ -20,12 +22,12 @@ public class ReminderMonitor {
     }
     
     public void start() {
-        System.out.println("Starting reminder monitor...");
+        log.info("Starting reminder monitor...");
         scheduler.scheduleAtFixedRate(this::checkDueReminders, 0, 1, TimeUnit.MINUTES);
     }
     
     public void stop() {
-        System.out.println("Stopping reminder monitor...");
+        log.info("Stopping reminder monitor...");
         scheduler.shutdown();
     }
     
@@ -33,7 +35,7 @@ public class ReminderMonitor {
         List<Reminder> dueReminders = repository.getDueReminders();
         
         if (!dueReminders.isEmpty()) {
-            System.out.println("Found " + dueReminders.size() + " due reminder(s)");
+            log.info("Found {} due reminder(s)", dueReminders.size());
         }
         
         for (Reminder reminder : dueReminders) {
@@ -46,6 +48,7 @@ public class ReminderMonitor {
         String title = "Reminder";
         String message = reminder.getTask();
         
+        log.info("🔔 REMINDER: {}", message);
         notificationService.notify(title, message);
     }
 } 

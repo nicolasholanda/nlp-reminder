@@ -1,7 +1,10 @@
 package com.github.nicolasholanda.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 
+@Slf4j
 public class LinuxNotificationService implements NotificationService {
     
     @Override
@@ -12,12 +15,12 @@ public class LinuxNotificationService implements NotificationService {
             int exitCode = process.waitFor();
             
             if (exitCode == 0) {
-                System.out.println("Desktop notification sent via notify-send");
+                log.info("Desktop notification sent via notify-send");
             } else {
-                System.err.println("notify-send failed with exit code: " + exitCode);
+                log.error("notify-send failed with exit code: {}", exitCode);
             }
         } catch (IOException | InterruptedException e) {
-            System.err.println("Error showing Linux notification: " + e.getMessage());
+            log.error("Error showing Linux notification: {}", e.getMessage());
         }
     }
 } 

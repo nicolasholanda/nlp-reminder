@@ -1,7 +1,10 @@
 package com.github.nicolasholanda.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 
+@Slf4j
 public class MacOSNotificationService implements NotificationService {
     
     @Override
@@ -13,12 +16,12 @@ public class MacOSNotificationService implements NotificationService {
             int exitCode = process.waitFor();
             
             if (exitCode == 0) {
-                System.out.println("Desktop notification sent via osascript");
+                log.info("Desktop notification sent via osascript");
             } else {
-                System.err.println("osascript failed with exit code: " + exitCode);
+                log.error("osascript failed with exit code: {}", exitCode);
             }
         } catch (IOException | InterruptedException e) {
-            System.err.println("Error showing macOS notification: " + e.getMessage());
+            log.error("Error showing macOS notification: {}", e.getMessage());
         }
     }
 } 

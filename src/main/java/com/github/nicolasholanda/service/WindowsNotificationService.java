@@ -1,7 +1,10 @@
 package com.github.nicolasholanda.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 
+@Slf4j
 public class WindowsNotificationService implements NotificationService {
     
     @Override
@@ -13,12 +16,12 @@ public class WindowsNotificationService implements NotificationService {
             int exitCode = process.waitFor();
             
             if (exitCode == 0) {
-                System.out.println("Desktop notification sent via PowerShell");
+                log.info("Desktop notification sent via PowerShell");
             } else {
-                System.err.println("PowerShell notification failed with exit code: " + exitCode);
+                log.error("PowerShell notification failed with exit code: {}", exitCode);
             }
         } catch (IOException | InterruptedException e) {
-            System.err.println("Error showing Windows notification: " + e.getMessage());
+            log.error("Error showing Windows notification: {}", e.getMessage());
         }
     }
 } 
