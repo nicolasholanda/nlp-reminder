@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
@@ -26,10 +27,14 @@ public class SocketListener {
                 log.info("Listening for reminder requests on {}", SOCKET_PATH);
                 while (true) {
                     try (SocketChannel channel = server.accept()) {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(channel.socket().getInputStream(), StandardCharsets.UTF_8));
-                        String line = reader.readLine();
-                        if (line != null && !line.isBlank()) {
-                            System.out.println("Received reminder request: " + line);
+                        ByteBuffer buffer = ByteBuffer.allocate(1024);
+                        int bytesRead = channel.read(buffer);
+                        if (bytesRead > 0) {
+                            buffer.flip();
+                            String message = StandardCharsets.UTF_8.decode(buffer).toString().trim();
+                            if (!message.isEmpty()) {
+                                log.info("Received reminder request: {}", message);
+                            }
                         }
                     } catch (Exception e) {
                         log.error("Error handling socket connection: {}", e.getMessage());
