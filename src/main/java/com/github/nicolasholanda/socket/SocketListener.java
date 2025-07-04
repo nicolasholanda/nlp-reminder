@@ -3,8 +3,6 @@ package com.github.nicolasholanda.socket;
 import com.github.nicolasholanda.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
 import java.nio.ByteBuffer;
@@ -16,9 +14,16 @@ import java.nio.file.Path;
 
 @Slf4j
 public class SocketListener {
+
+    private final ReminderService service;
+
     private static final String SOCKET_PATH = "/tmp/nlp-reminder.sock";
 
-    public void start(ReminderService service) {
+    public SocketListener(ReminderService service) {
+        this.service = service;
+    }
+
+    public void start() {
         Path socketPath = Path.of(SOCKET_PATH);
         try {
             Files.deleteIfExists(socketPath);
@@ -34,6 +39,7 @@ public class SocketListener {
                             String message = StandardCharsets.UTF_8.decode(buffer).toString().trim();
                             if (!message.isEmpty()) {
                                 log.info("Received reminder request: {}", message);
+                                service.createReminderFrom(message);
                             }
                         }
                     } catch (Exception e) {

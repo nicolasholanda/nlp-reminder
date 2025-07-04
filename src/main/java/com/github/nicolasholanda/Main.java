@@ -12,12 +12,11 @@ public class Main {
         ReminderRepository repository = new ReminderRepository();
         ReminderService service = new ReminderService(repository);
         ReminderMonitor monitor = new ReminderMonitor(repository);
-        SocketListener socketListener = new SocketListener();
+        SocketListener socketListener = new SocketListener(service);
 
         monitor.start();
         log.info("Reminder monitor started.");
 
-        // Start socket listener in main thread (blocking)
-        socketListener.start(service);
+        socketListener.start();
     }
 }

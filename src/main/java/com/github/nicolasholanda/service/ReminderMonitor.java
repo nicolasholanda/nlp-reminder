@@ -23,7 +23,7 @@ public class ReminderMonitor {
     
     public void start() {
         log.info("Starting reminder monitor...");
-        scheduler.scheduleAtFixedRate(this::checkDueReminders, 0, 1, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(this::checkDueReminders, 0, 5, TimeUnit.SECONDS);
     }
     
     public void stop() {
