@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# NLP Reminder CLI Tool
+# Usage: reminder "buy milk in 2 minutes"
+
+SOCKET_PATH="/tmp/nlp-reminder.sock"
+
+# Function to show usage
+show_usage() {
+    echo "NLP Reminder CLI Tool"
+    echo ""
+    echo "Usage:"
+    echo "  reminder \"<reminder text>\""
+    echo ""
+    echo "Examples:"
+    echo "  reminder \"buy milk in 2 minutes\""
+    echo "  reminder \"call mom tomorrow at 3pm\""
+    echo "  reminder \"meeting in 30 minutes\""
+    echo ""
+    echo "The reminder text should include natural language time references."
+    echo "Supported formats:"
+    echo "  - \"in X minutes/hours/days\""
+    echo "  - \"at X:XX am/pm\""
+    echo "  - \"tomorrow at X:XX\""
+    echo "  - \"next Monday at X:XX\""
+    echo ""
+}
+
+# Function to check if the reminder service is running
+check_service() {
+    if [ ! -S "$SOCKET_PATH" ]; then
+        echo "Error: Reminder service is not running."
+        echo "Please start the reminder service first by running:"
+        echo "  java -jar nlp-reminder.jar"
+        echo ""
+        echo "Or if you're running from source:"
+        echo "  mvn exec:java -Dexec.mainClass=\"com.github.nicolasholanda.Main\""
+        exit 1
+    fi
+}
+
+# Function to send reminder to socket
+send_reminder() {
+    local message="$1"
+    
+    # Check if netcat is available
+    if ! command -v nc &> /dev/null; then
+        echo "Error: netcat (nc) is not installed."
+        echo "Please install netcat to use this tool."
+        echo "On Ubuntu/Debian: sudo apt install netcat"
+        echo "On macOS: brew install netcat"
+        exit 1
+    fi
+    
+    # Send the message to the socket
+    echo "$message" | nc -U "$SOCKET_PATH" 2>/dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ Reminder set: \"$message\""
+    else
+        echo "Error: Failed to send reminder. Make sure the service is running."
+        exit 1
+    fi
+}
+
+# Main script logic
+main() {
+    # Check if no arguments provided
+    if [ $# -eq 0 ]; then
+        show_usage
+        exit 1
+    fi
+    
+    # Check for help flag
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+        show_usage
+        exit 0
+    fi
+    
+    # Check if service is running
+    check_service
+    
+    # Send the reminder
+    send_reminder "$1"
+}
+
+# Run main function with all arguments
+main "$@" 
