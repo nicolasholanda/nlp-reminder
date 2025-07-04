@@ -2,6 +2,9 @@ package com.github.nicolasholanda.service;
 
 import com.github.nicolasholanda.model.Reminder;
 import com.github.nicolasholanda.repository.ReminderRepository;
+import com.github.nicolasholanda.service.notification.NotificationService;
+import com.github.nicolasholanda.service.notification.NotificationServiceFactory;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.github.nicolasholanda.service;
+package com.github.nicolasholanda.service.notification;
 
 import lombok.extern.slf4j.Slf4j;
 
